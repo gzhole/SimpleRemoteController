@@ -11,7 +11,6 @@ class RemoteAgentActorFSM extends Actor with FSM[Int, (String, ExecutionOp)] {
   //3, failed
   // 
   def runningTimeout = { scala.concurrent.duration.Duration.Inf }
-  // Default running timeout operation does nothing and stays in the current state.  Override to provide variant functionality (such as liveness, completion, etc.)
   def runningTimeoutOperation: RemoteAgentActorFSM.this.State = {
     val currState = stay
     //logger.debug("Got running timeout, staying in state => {}", currState)
