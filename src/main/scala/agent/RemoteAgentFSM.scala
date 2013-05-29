@@ -4,7 +4,7 @@ import akka.actor.{ Props, Actor, ActorSystem, FSM }
 import com.typesafe.config.ConfigFactory
 import scala.concurrent.duration._
 
-//import com.ibm.torolab.agent.ExecuteRemoteCmd
+
 class RemoteAgentActorFSM extends Actor with FSM[Int, (String, ExecutionOp)] {
   //1, ready
   //2, running

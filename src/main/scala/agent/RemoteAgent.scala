@@ -5,7 +5,6 @@ import com.typesafe.config.ConfigFactory
 import java.io.PrintWriter
 import java.io.File
 
-//import com.ibm.torolab.agent.ExecuteCmd
 class RemoteAgentActor extends Actor {
 
   def receive = {
