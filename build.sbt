@@ -1,13 +1,12 @@
 import AssemblyKeys._ // put this at the top of the file
 
-name := "SimpleRemoteController"
+name := "AcmeAirTypesafe"
 
 version := "1.0"
 
 scalaVersion := "2.10.1"
 
 libraryDependencies ++= List(
-//"org.scalaz" %% "scalaz-core" % "7.0.0-M9",
 "com.typesafe.akka" %% "akka-actor" % "2.1.2",
 "com.typesafe.akka" %% "akka-kernel" % "2.1.2",
 "com.typesafe.akka" %% "akka-testkit" % "2.1.2",
