@@ -29,27 +29,27 @@ object SimpleLocalTest extends Client {
     agent.shutdown
     result
   }
-  
+
   def testCmdWithMultiRemoteHosts = {
     val agent = new RemoteAgent
     Thread.sleep(3000)
-    val propertiesMap = Map(Utility.getCurrentIP -> constant.commonActorName,Utility.getCurrentIP -> constant.commonActorName)
+    val propertiesMap = Map(Utility.getCurrentIP -> constant.commonActorName, Utility.getCurrentIP -> constant.commonActorName)
     val app = new RemoteMultiLookupWithNameFSM(propertiesMap)
     val result = app.executeGenaricTask(new ExecuteRemoteCmd("hostname"))
     app.shutdown
     agent.shutdown
     result
   }
-  
-   def testCmdCopyTxtFileToRemote = {
-      val agent = new RemoteAgent
+
+  def testCmdCopyTxtFileToRemote = {
+    val agent = new RemoteAgent
     Thread.sleep(3000)
     val propertiesMap = Map(Utility.getCurrentIP -> constant.commonActorName)
     val app = new RemoteMultiLookupWithNameFSM(propertiesMap)
-    val contents =  Source.fromFile("build.xml").mkString
-   val result = app.executeCopyTask(new FileData("build1.xml", contents))
-  
-   app.shutdown
+    val contents = Source.fromFile("build.sbt").mkString
+    val result = app.executeCopyTask(new FileData("build1.xml", contents))
+
+    app.shutdown
     agent.shutdown
     result
   }
