@@ -22,7 +22,7 @@ object Client {
 
   def usage = {
     println(
-        """This is a client wrapper to invoke command on remove machine.
+        """This is a client wrapper to invoke command on remote machine.
 Run command on local machine: Java Client COMMAND. E.g. Java Client hostname
 Run command on remote machine: Java Client COMMAND IP. E.g. Java Client hostname 192.168.0.1
     """)
