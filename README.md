@@ -13,10 +13,15 @@ http://www.eclipse.org/egit/download/
 https://github.com/gzhole/SimpleRemoteController.git)
 
 5. After finishing loading source codes, goto source directory build jar file
+
 cd SimpleRemoteController
+
 sbt
+
 compile
+
 test
+
 assembly
 
 6. Copy jar file to vm, it's in 
