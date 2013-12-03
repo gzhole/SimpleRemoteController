@@ -19,19 +19,6 @@ class RemoteAgentActor extends Actor {
       writer.close()
       sender !  cmdResult("(" + this.self.path.name + ": is finished copying to "+path+") --" + "Remote IP: " + Utility.getCurrentIP)//cmdResult("Done!!!")
     }
-    /* case TickDelete => {
-      println("callled")
-      println(Executor("""c:\taskDelete.bat""").getOutput)
-    }
-    case TickShowInfo => {
-      println("receiving command: show info" )
-      sender ! cmdResult(Executor("""c:\task.bat""").getOutput)
-    } 
-     case Tick(str) => {
-      println("receiving Tick command: " + str)
-      sender ! cmdResult(Executor(str).getOutput)
-     // println(Executor("""c:\taskDelete.bat""").getOutput)
-    }*/
     case ExecuteRemoteCmd(str) => {
       println("receiving command: " + str)
       sender ! cmdResult(Executor(str).getOptionOutputWithException + "\nRemote IP: " + Utility.getCurrentIP)
@@ -42,10 +29,12 @@ class RemoteAgentActor extends Actor {
   }
 }
 
-class RemoteAgent extends Bootable {
+class RemoteAgent(ip :String ="127.0.0.1") extends Bootable {
 
   // println(localIpAddress)
-  val currentIpaddress = Utility.getCurrentIP
+ // val currentIpaddress = Utility.getCurrentIP
+   val currentIpaddress = if (ip.equalsIgnoreCase("127.0.0.1")) Utility.getCurrentIP  else ip
+ 
 //  import com.typesafe.config.ConfigFactory
   val customConf = ConfigFactory.parseString(s"""
       //#remoteAgent

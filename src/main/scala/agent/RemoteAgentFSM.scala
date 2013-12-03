@@ -118,16 +118,14 @@ class RemoteAgentActorFSM extends Actor with FSM[Int, (String, ExecutionOp)] {
     case 2 -> 1 =>
       stateData match {
         case (_, ExecuteRemoteCmd(str)) => println("receiving command in onTransition state, will be block for a while " + str)
-        // case Todo(ref, queue) => ref ! Batch(queue)
+        case _ => 
       }
   }
 }
 
-class RemoteAgentFSM extends Bootable {
+class RemoteAgentFSM(ip :String ="127.0.0.1") extends Bootable {
 
-  // println(localIpAddress)
-  val currentIpaddress = Utility.getCurrentIP
-  //  import com.typesafe.config.ConfigFactory
+  val currentIpaddress = if (ip.equalsIgnoreCase("127.0.0.1")) Utility.getCurrentIP  else ip
   val customConf = ConfigFactory.parseString(s"""
       //#remoteAgent
 remoteAgent {
@@ -172,9 +170,17 @@ remoteAgent {
 
 object RemoteAgentAppFSM {
   def main(args: Array[String]) {
-    new RemoteAgentFSM
-    println("Started RemoteAgentFSM Application - waiting for messages")
-     new RemoteAgent
-     println("Started RemoteAgent for file copy Application - waiting for messages")
+	 args match {
+	   case Array(ip) => {
+		    new RemoteAgentFSM (ip)
+		    new RemoteAgent(ip)
+	   }
+	   case _ => {
+	      new RemoteAgentFSM
+	      new RemoteAgent
+	   }
+	 }
+    
+     println("Ready for remote command execution and file copy  - waiting for messages")
   }
 }
