@@ -1,4 +1,5 @@
 How to setup development environment:
+
 1. Download Scala IDE (Eclipse)
 http://scala-ide.org/download/sdk.html
 
