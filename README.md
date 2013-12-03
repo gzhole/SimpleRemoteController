@@ -12,17 +12,8 @@ http://www.eclipse.org/egit/download/
 4. In Eclipse Git Repositories view, connect to Github with following URL (right click mouse-> paste Repository URL 
 https://github.com/gzhole/SimpleRemoteController.git)
 
-5. After finishing loading source codes, goto source directory build jar file
-
-cd SimpleRemoteController
-
-sbt
-
-compile
-
-test
-
-assembly
+5. After finishing loading source codes, goto source directory build jar file, and run: cd SimpleRemoteController,
+sbt,compile,test,assembly
 
 6. Copy jar file to vm, it's in 
 SimpleRemoteController\target\scala-2.10\AcmeAirAgent.jar
@@ -37,8 +28,8 @@ java -jar AcmeAirAgent.jar localIPAddress
 a. copy local file to remote vm, e.g. 
 java -cp AcmeAirAgent.jar Client copy a.txt  192.168.0.111
 
-b. execute remote command
+b. execute remote command, e.g.
 java -cp AcmeAirAgent.jar Client "cat /tmp/a.txt"  192.168.0.111
 
-c. execute local command (if agent is started locally)
+c. execute local command (if agent is started locally), e.g.
 java -cp AcmeAirAgent.jar Client hostname
