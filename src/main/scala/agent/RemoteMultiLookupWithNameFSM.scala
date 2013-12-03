@@ -167,15 +167,10 @@ object RemoteMultiLookupWithNameFSM {
   //   Thread.sleep(2000)
      
     app.executeTask("start",ExecuteRemoteCmd("""hostname"""))
- //   Thread.sleep(2000)
     app.executeTask("status",ExecuteRemoteCmd("""hostname"""))
      app.executeTask("stop",ExecuteRemoteCmd("""hostname"""))
     app.executeTask("status",ExecuteRemoteCmd("""hostname"""))
-    //  val f = Future(app.doSomething(ExecuteCmd("""ipconfig.exe""")))
-    //   f onSuccess{case v => println("Success")}
-    //   f onComplete{case v => println("Compless")}
-    //  Await.result(f,Duration.Inf)
-       app.shutdown
+        app.shutdown
   }
   def shutdown = app.shutdown
 }
