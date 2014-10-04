@@ -19,7 +19,7 @@ sbt,compile,test,assembly
 SimpleRemoteController\target\scala-2.10\AcmeAirAgent.jar
 
 7. Start agent with 
-java -jar AcmeAirAgent.jar or if you multiple IP, java -jar AcmeAirAgent.jar localIPAddress
+java -jar AcmeAirAgent.jar or if you have multiple IPs, java -jar AcmeAirAgent.jar localIPAddress
 
 8. On the client machine, you can:
 
