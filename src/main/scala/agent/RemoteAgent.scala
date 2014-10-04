@@ -47,6 +47,10 @@ remoteAgent {
   }
 
   remote {
+    netty.tcp {
+      hostname = "$currentIpaddress"
+      port = 2550
+    }
     netty {
       hostname = "$currentIpaddress"
      }

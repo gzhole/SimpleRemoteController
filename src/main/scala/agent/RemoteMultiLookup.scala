@@ -25,6 +25,10 @@ remotelookup {
   }
 
   remote {
+      netty.tcp {
+      hostname = "$currentIpaddress"
+      port = 2553
+    }
     netty {
       hostname = "$currentIpaddress"
     
