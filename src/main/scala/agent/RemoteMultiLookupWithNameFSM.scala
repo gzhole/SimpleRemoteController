@@ -21,14 +21,19 @@ remotelookup {
  // include "common"
 
   akka {
+          log-dead-letters = 0
+  log-dead-letters-during-shutdown = off
+  
      actor {
     provider = "akka.remote.RemoteActorRefProvider"
   }
 
   remote {
+      enabled-transports = ["akka.remote.netty.tcp"]
       netty.tcp {
       hostname = "$currentIpaddress"
       port = 2553
+      maximum-frame-size = 12800000b
     }
     netty {
       hostname = "$currentIpaddress"
@@ -43,7 +48,7 @@ remotelookup {
 
   val system = ActorSystem("RemoteLookup", ConfigFactory.load(customConf).getConfig("remotelookup"))
   //val actor = system.actorOf(Props[LookupActor], "lookupActor")
-  // val commandActor = system.actorFor("akka://RemoteAgent@"+remoteIp+":2552/user/RemoteAgentActor")
+  // val commandActor = system.actorFor("akka.tcp://RemoteAgent@"+remoteIp+":2552/user/RemoteAgentActor")
   //  commandActor ! ExecuteCmd("""ipconfig.exe""")
 
   def executeTask(cmd :String, op: ExecutionOp) = {
@@ -60,7 +65,7 @@ remotelookup {
     implicit val timeout = Timeout(300 seconds)
     val remoteClients = for {
       i <- remoteIps.keySet
-      val f1 = ask(system.actorFor("akka://RemoteAgentFSM@" + i + ":2552/user/"+remoteIps.getOrElse(i, "RemoteAgentActorFSM")), (cmd,op)).mapTo[cmdResult]
+      val f1 = ask(system.actorFor("akka.tcp://RemoteAgentFSM@" + i + ":2552/user/"+remoteIps.getOrElse(i, "RemoteAgentActorFSM")), (cmd,op)).mapTo[cmdResult]
     } yield f1
     val resutls = Await.result(Future.sequence(remoteClients), 300 seconds)
     resutls map {
@@ -85,7 +90,7 @@ remotelookup {
     implicit val timeout = Timeout(300 seconds)
     val remoteClients = for {
       i <- remoteIps.keySet
-        val f1 = ask(system.actorFor("akka://RemoteAgentFSM@" + i + ":2552/user/"+remoteIps.getOrElse(i, "RemoteAgentActorFSM")), (cmd,operationsWithProperties.getOrElse(i, "doing nothing!!!"))).mapTo[cmdResult]
+        val f1 = ask(system.actorFor("akka.tcp://RemoteAgentFSM@" + i + ":2552/user/"+remoteIps.getOrElse(i, "RemoteAgentActorFSM")), (cmd,operationsWithProperties.getOrElse(i, "doing nothing!!!"))).mapTo[cmdResult]
     } yield f1
     val resutls = Await.result(Future.sequence(remoteClients), 300 seconds)
     resutls map {
@@ -110,7 +115,7 @@ remotelookup {
     implicit val timeout = Timeout(300 seconds)
     val remoteClients = for {
       i <- remoteIps.keySet
-      val f1 = ask(system.actorFor("akka://RemoteAgent@" + i + ":2550/user/"+remoteIps.getOrElse(i, "RemoteAgentActor")), (op)).mapTo[cmdResult]
+      val f1 = ask(system.actorFor("akka.tcp://RemoteAgent@" + i + ":2550/user/"+remoteIps.getOrElse(i, "RemoteAgentActor")), (op)).mapTo[cmdResult]
     } yield f1
     val resutls = Await.result(Future.sequence(remoteClients), 300 seconds)
     resutls map {
@@ -121,6 +126,31 @@ remotelookup {
     // actor ! (commandActor, op)
   } 
   
+   def executeCopyBinaryTask(op: FileBinaryData) = {
+    import akka.pattern.ask
+    import scala.concurrent.duration.FiniteDuration
+    import scala.concurrent.duration._
+    import scala.concurrent.Future
+    import scala.concurrent.Await
+    import scala.concurrent._
+    import scala.concurrent.util._
+    import ExecutionContext.Implicits.global
+    import scala.concurrent.duration.Duration
+
+    implicit val timeout = Timeout(300 seconds)
+    val remoteClients = for {
+      i <- remoteIps.keySet
+      val f1 = ask(system.actorFor("akka.tcp://RemoteAgent@" + i + ":2550/user/"+remoteIps.getOrElse(i, "RemoteAgentActor")), (op)).mapTo[cmdResult]
+    } yield f1
+    val resutls = Await.result(Future.sequence(remoteClients), 300 seconds)
+    resutls map {
+      case cmdResult(str) => str//);println()
+     // case cmdResult(Exception, str) => println(str);println()
+    }
+   // shutdown
+    // actor ! (commandActor, op)
+  } 
+   
   def executeGenaricTask(cmd: ExecuteRemoteCmd) = {
     import akka.pattern.ask
     import scala.concurrent.duration.FiniteDuration
@@ -135,7 +165,7 @@ remotelookup {
     implicit val timeout = Timeout(300 seconds)
     val remoteClients = for {
       i <- remoteIps.keySet
-      val f1 = ask(system.actorFor("akka://RemoteAgent@" + i + ":2550/user/"+remoteIps.getOrElse(i, "RemoteAgentActor")), (cmd)).mapTo[cmdResult]
+      val f1 = ask(system.actorFor("akka.tcp://RemoteAgent@" + i + ":2550/user/"+remoteIps.getOrElse(i, "RemoteAgentActor")), (cmd)).mapTo[cmdResult]
     } yield f1
     val resutls = Await.result(Future.sequence(remoteClients), 300 seconds)
     resutls map {

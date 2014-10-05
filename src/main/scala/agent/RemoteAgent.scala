@@ -4,6 +4,7 @@ import akka.actor.{ Props, Actor, ActorSystem }
 import com.typesafe.config.ConfigFactory
 import java.io.PrintWriter
 import java.io.File
+import java.io.FileOutputStream
 
 class RemoteAgentActor extends Actor {
 
@@ -17,6 +18,16 @@ class RemoteAgentActor extends Actor {
       val writer = new PrintWriter(new File(path))
       writer.write(content)
       writer.close()
+      sender !  cmdResult("(" + this.self.path.name + ": is finished copying to "+path+") --" + "Remote IP: " + Utility.getCurrentIP)//cmdResult("Done!!!")
+    }
+    case FileBinaryData(path, content) => {
+         println("receiving request to copy file: " + path)
+         
+     // val writer = new PrintWriter(new File(path))
+         val fos = new FileOutputStream(new File(path))
+
+      fos.write(content)
+      fos.close()
       sender !  cmdResult("(" + this.self.path.name + ": is finished copying to "+path+") --" + "Remote IP: " + Utility.getCurrentIP)//cmdResult("Done!!!")
     }
     case ExecuteRemoteCmd(str) => {
@@ -42,14 +53,19 @@ remoteAgent {
   //include "common"
  
   akka {
+          log-dead-letters = 0
+  log-dead-letters-during-shutdown = off
+  
    actor {
     provider = "akka.remote.RemoteActorRefProvider"
   }
 
   remote {
+    enabled-transports = ["akka.remote.netty.tcp"]  
     netty.tcp {
       hostname = "$currentIpaddress"
       port = 2550
+      maximum-frame-size = 12800000b
     }
     netty {
       hostname = "$currentIpaddress"

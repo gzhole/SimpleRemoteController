@@ -20,11 +20,15 @@ remotelookup {
  // include "common"
 
   akka {
+          log-dead-letters = 0
+  log-dead-letters-during-shutdown = off
+  
      actor {
     provider = "akka.remote.RemoteActorRefProvider"
   }
 
   remote {
+      enabled-transports = ["akka.remote.netty.tcp"]
       netty.tcp {
       hostname = "$currentIpaddress"
       port = 2553
@@ -43,7 +47,7 @@ remotelookup {
   
   val system = ActorSystem("RemoteLookup",ConfigFactory.load(customConf).getConfig("remotelookup"))
   val actor = system.actorOf(Props[LookupActor], "lookupActor")
-  val commandActor = system.actorFor("akka://RemoteAgent@"+remoteIp+":2550/user/catologActor")
+  val commandActor = system.actorFor("akka.tcp://RemoteAgent@"+remoteIp+":2550/user/catologActor")
 //  commandActor ! ExecuteCmd("""ipconfig.exe""")
   
   def doSomething(op: ExecutionOp) = {

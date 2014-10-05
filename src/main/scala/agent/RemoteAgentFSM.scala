@@ -132,11 +132,18 @@ remoteAgent {
   //include "common"
  
   akka {
+      log-dead-letters = 0
+  log-dead-letters-during-shutdown = off
    actor {
     provider = "akka.remote.RemoteActorRefProvider"
   }
 
   remote {
+      enabled-transports = ["akka.remote.netty.tcp"]
+    netty.tcp {
+      hostname = "$currentIpaddress"
+      port = 2552
+    }  
     netty {
       hostname = "$currentIpaddress"
      }
