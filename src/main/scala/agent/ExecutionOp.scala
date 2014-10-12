@@ -5,6 +5,8 @@ case class ExecuteCmd(str: String) extends ExecutionOp
 
 case class FileData(fileWithFullPath: String, contents :String) extends ExecutionOp
 case class FileBinaryData(fileWithFullPath: String, contents :Array[Byte]) extends ExecutionOp
+case class UpdateBinaryFile(startLocation: String, libName: String,binaryFiles: Set [FileBinaryData]) extends ExecutionOp
+
 //this one return ip address
 case class ExecuteRemoteCmd(str: String) extends ExecutionOp
 

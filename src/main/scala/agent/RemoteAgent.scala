@@ -5,9 +5,13 @@ import com.typesafe.config.ConfigFactory
 import java.io.PrintWriter
 import java.io.File
 import java.io.FileOutputStream
+import actors.FinderActor
+import actors.FinderActor.locate
+import actors.FinderActor.Result
 
 class RemoteAgentActor extends Actor {
-
+ def getterProps(): Props = Props(new FinderActor())
+ def files = "files1234"
   def receive = {
     case ExecuteCmd(str) => {
       println("receiving command: " + str)
@@ -33,6 +37,30 @@ class RemoteAgentActor extends Actor {
     case ExecuteRemoteCmd(str) => {
       println("receiving command: " + str)
       sender ! cmdResult(Executor(str).getOptionOutputWithException + "\nRemote IP: " + Utility.getCurrentIP)
+    }
+    
+    case UpdateBinaryFile(startLocation, libName, binaryFiles) => {
+    
+     println("receiving request to update jar file: " + libName)
+       
+     	for {
+        	files <- Option(new File(files).listFiles)
+        	file <- files /*if file.getName.endsWith(".jpg")*/
+        } file.delete()
+        
+        //write to file
+         binaryFiles map (binaryFile => {
+        	 				println(binaryFile.fileWithFullPath)
+        					 val fos = new FileOutputStream(new File(files , binaryFile.fileWithFullPath));
+        					 fos.write(binaryFile.contents)
+        					 fos.close()
+        				}
+        )
+      context.actorOf(getterProps()) ! locate(startLocation, libName)
+    }
+    
+    case Result(location) => {
+      println("got the location" + location)
     }
     case _ =>
       println("Nothing to do")
