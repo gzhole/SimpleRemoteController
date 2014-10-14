@@ -151,6 +151,31 @@ remotelookup {
     // actor ! (commandActor, op)
   } 
    
+    def executeuUpdateClassFilesTask(op: UpdateBinaryFile) = {
+    import akka.pattern.ask
+    import scala.concurrent.duration.FiniteDuration
+    import scala.concurrent.duration._
+    import scala.concurrent.Future
+    import scala.concurrent.Await
+    import scala.concurrent._
+    import scala.concurrent.util._
+    import ExecutionContext.Implicits.global
+    import scala.concurrent.duration.Duration
+
+    implicit val timeout = Timeout(300 seconds)
+    val remoteClients = for {
+      i <- remoteIps.keySet
+      val f1 = ask(system.actorFor("akka.tcp://RemoteAgent@" + i + ":2550/user/"+remoteIps.getOrElse(i, "RemoteAgentActor")), (op)).mapTo[cmdResult]
+    } yield f1
+    val resutls = Await.result(Future.sequence(remoteClients), 300 seconds)
+    resutls map {
+      case cmdResult(str) => str//);println()
+     // case cmdResult(Exception, str) => println(str);println()
+    }
+   // shutdown
+    // actor ! (commandActor, op)
+  } 
+   
   def executeGenaricTask(cmd: ExecuteRemoteCmd) = {
     import akka.pattern.ask
     import scala.concurrent.duration.FiniteDuration

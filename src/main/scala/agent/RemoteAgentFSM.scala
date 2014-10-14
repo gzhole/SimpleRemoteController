@@ -3,6 +3,10 @@ import akka.kernel.Bootable
 import akka.actor.{ Props, Actor, ActorSystem, FSM }
 import com.typesafe.config.ConfigFactory
 import scala.concurrent.duration._
+import java.io.FileOutputStream
+import java.io.File
+import actors.FinderActor
+import actors.FinderActor.locate
 
 
 class RemoteAgentActorFSM extends Actor with FSM[Int, (String, ExecutionOp)] {
@@ -10,6 +14,8 @@ class RemoteAgentActorFSM extends Actor with FSM[Int, (String, ExecutionOp)] {
   //2, running
   //3, failed
   // 
+  def getterProps(): Props = Props(new FinderActor())
+ 
   def runningTimeout = { scala.concurrent.duration.Duration.Inf }
   def runningTimeoutOperation: RemoteAgentActorFSM.this.State = {
     val currState = stay
@@ -67,6 +73,25 @@ class RemoteAgentActorFSM extends Actor with FSM[Int, (String, ExecutionOp)] {
       sender ! cmdResult("(" + this.self.path.name + ": is already in Running State) --" + "Remote IP: " + Utility.getCurrentIP)
       stay
     }
+    
+   /* case Event(("start", UpdateBinaryFile(libName, binaryFiles)), _) => {
+         println("receiving request to update jar file: " + libName)
+         context.actorOf(getterProps()) ! locate(".", "Getter.scala")
+        
+        //write to file
+         binaryFiles map (binaryFile => {
+        					 val fos = new FileOutputStream(new File(binaryFile.fileWithFullPath));
+        					 fos.write(binaryFile.contents)
+        					 fos.close()
+        				}
+        ) 
+        
+        
+
+      
+      sender !  cmdResult("(" + this.self.path.name + ": is finished copying to "+libName+") --" + "Remote IP: " + Utility.getCurrentIP)//cmdResult("Done!!!")
+      stay
+    }*/
     
     case Event(("fail", ExecuteRemoteCmd(str)), _) => {
      sender ! cmdResult("put "+ this.self.path.name + " to Failed State --" + "Remote IP: " + Utility.getCurrentIP)
@@ -165,6 +190,8 @@ remoteAgent {
   val jmeterActor = system.actorOf(Props[RemoteAgentActorFSM], constant.jmeterActorName)
   val nmonActor = system.actorOf(Props[RemoteAgentActorFSM], constant.nmonActor)
   //#setup
+  
+  //val finderactor = system.actorOf(Props[FinderActor], "finderadctor")
 
   def startup() {
   }
