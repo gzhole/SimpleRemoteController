@@ -26,8 +26,11 @@ public class ZipUtils {
 		zipIt(outpuZipFile);
 	}
 
+	private ZipUtils() {
+		new Exception("not supported");
+	}
 	public static void main(String[] args) {
-		ZipUtils appZip = new ZipUtils("xsa.app.zip","libfolder/libfolder/xsa.app" );
+		ZipUtils appZip = new ZipUtils("xsa.app.zip","libfolder/xsa.app" );
 	
 	}
 
