@@ -13,12 +13,14 @@ import agent.UpdateBinaryFile
 object Client {
 
   def main(args: Array[String]): Unit = {
+    println("calling client")
     args match {
        case Array(command) => execute(command)
        case Array(command, ip) => execute(command, ip)
        case Array("copy", command, ip) => executeCopy(command, ip)
        case Array("bcopy", command, ip) => executeBinaryCopy(command, ip)
-       case _ => /*usage*/ executeUpdateClassFiles(".", "test.jar", "org", "192.168.1.14")
+        case Array("ujar", destlibdir, jarname, clientClassFolder, ip) => executeUpdateClassFiles(destlibdir, jarname, clientClassFolder, ip)
+       case _ => /*usage*/ executeUpdateClassFiles("destlibdir", "test.jar", "org", "127.0.0.1")
     
       
     }
